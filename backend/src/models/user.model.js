@@ -1,6 +1,8 @@
 import { Schema, model } from "mongoose";
 import jwt from "jsonwebtoken";
-const userSchema = new Schema([
+import bcrypt from "bcrypt";
+
+const userSchema = new Schema(
   {
     name: {
       type: String,
@@ -27,14 +29,22 @@ const userSchema = new Schema([
     refreshToken: {
       type: String,
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    lastVerificationEmailSentAt: {
+      type: Date,
+      default: null,
+    },
   },
-  { timesstamps: true },
-]);
+  { timestamps: true }
+);
 
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", function (next) {
   if (!this.isModified("password")) return next();
   try {
-    const hashPassword = await bcrypt.hash(this.password, 10);
+    const hashPassword = bcrypt.hash(this.password, 10);
     this.password = hashPassword;
     next();
   } catch (error) {
@@ -61,7 +71,7 @@ userSchema.methods.generateAccessToken = function () {
   );
 };
 
-userSchema.methods.generateRefreshToken = async function () {
+userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       _id: this._id,
@@ -71,6 +81,12 @@ userSchema.methods.generateRefreshToken = async function () {
       expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
     }
   );
+};
+
+userSchema.methods.generateEmailVerificationToken = function () {
+  return jwt.sign({ _id: this._id }, process.env.EMAIL_VERIFICATION_SECRET, {
+    expiresIn: process.env.EMAIL_VERIFICATION_EXPIRY,
+  });
 };
 
 const User = model("User", userSchema);
