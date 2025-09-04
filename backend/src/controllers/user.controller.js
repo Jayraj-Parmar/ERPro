@@ -122,10 +122,10 @@ const verifyEmail = async (req, res) => {
     );
     const user = await User.findById(decode._id).select("-password");
     if (!user) {
-      throw new ApiError(404, "User not found");
+      res.status(404).json(new ApiResponse(404, null, "User not found"));
     }
     if (user.isVerified) {
-      throw new ApiError(409, "User already verified");
+      res.status(409).json(new ApiResponse(409, null, "User already verified"));
     }
 
     if (user.refreshToken) {
@@ -171,7 +171,7 @@ const resendEmail = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    throw new ApiError(404, "User not found");
+    return res.status(404).json(new ApiResponse(404, null, "User not found"));
   }
   const now = Date.now();
   const lastSent = user.lastVerificationEmailSentAt;
