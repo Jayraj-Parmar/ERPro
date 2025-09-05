@@ -7,6 +7,7 @@ import { TbLockPassword } from "react-icons/tb";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { signupUser } from "../../api/authApi";
+import { useNavigate } from "react-router-dom";
 function Signup() {
   const [formData, setFormDate] = useState({
     name: "",
@@ -15,6 +16,7 @@ function Signup() {
   });
   const [showPassword, setshowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
   // const [message, setMessage] = useState("");
   const handleChange = (e) => {
     setFormDate({ ...formData, [e.target.name]: e.target.value });
@@ -24,7 +26,11 @@ function Signup() {
     setErrors({});
     try {
       const res = await signupUser(formData);
-      console.log(res);
+      if (res.status === 200) {
+        navigate(res.data?.redirectTo, {
+          state: { email: res.data?.email, message: res.message },
+        });
+      }
     } catch (error) {
       if (error.status === 422 && error.errors.length > 0) {
         const fiedErrors = {};
@@ -32,6 +38,11 @@ function Signup() {
           fiedErrors[err.path] = err.msg;
         });
         setErrors(fiedErrors);
+      }
+      if (error.status === 409) {
+        navigate(error.data?.redirectTo, {
+          state: { message: error?.message, email: error.data?.email },
+        });
       }
     }
   };

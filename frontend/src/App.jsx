@@ -1,10 +1,9 @@
-import React from "react";
-import Signup from "./pages/Auth/Signup";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
   return (
     <>
-      <Signup />
+      <AppRoutes />
     </>
   );
 }
