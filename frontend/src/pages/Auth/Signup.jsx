@@ -18,11 +18,44 @@ function Signup() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   // const [message, setMessage] = useState("");
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required..";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required..";
+    } else if (formData.email.match(/\S+@\S+\.\S+/)) {
+      newErrors.email = "Valid email required..";
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required..";
+    } else if (formData.password.trim().length < 8) {
+      newErrors.password = "Password must be at least 8 characters long..";
+    } else if (
+      !formData.password.match(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+      )
+    ) {
+      newErrors.password =
+        "Password must include uppercase, lowercase, number, and special character..";
+    }
+
+    return newErrors;
+  };
   const handleChange = (e) => {
     setFormDate({ ...formData, [e.target.name]: e.target.value });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
     setErrors({});
     try {
       const res = await signupUser(formData);
@@ -100,7 +133,12 @@ function Signup() {
         </div>
         <Button
           type="submit"
-          className="py-2 px-4 bg-blue-600 text-white rounded-lg mt-5"
+          className="py-2 px-4 bg-blue-600 text-white rounded-lg mt-5 disabled:opacity-50"
+          disabled={
+            !formData.name.trim() ||
+            !formData.email.trim() ||
+            !formData.password.trim()
+          }
         >
           Submit
         </Button>
