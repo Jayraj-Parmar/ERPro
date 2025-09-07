@@ -40,24 +40,5 @@ API.interceptors.response.use(
 // Signup
 export const signupUser = (formData) => API.post("/user/signup", formData);
 
-// errors
-// :
-// Array(2)
-// 0
-// :
-// {type: 'field', value: 'dsfsdf', msg: 'Password must be at least 8 characters long.', path: 'password', location: 'body'}
-// 1
-// :
-// {type: 'field', value: 'dsfsdf', msg: 'Password must include uppercase, lowercase, number, and special character.', path: 'password', location: 'body'}
-// length
-// :
-// 2
-// [[Prototype]]
-// :
-// Array(0)
-// message
-// :
-// "Validation failed"
-// status
-// :
-// 422
+export const resendEmail = (userEmail) =>
+  API.post("/user/resend-email", userEmail);

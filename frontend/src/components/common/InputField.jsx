@@ -1,16 +1,13 @@
 import { MdOutlineErrorOutline } from "react-icons/md";
 function InputField({
   label,
-  type,
   id,
-  name,
-  value,
+  type,
   className,
-  onChange,
-  placeholder,
   iconStart,
   iconEnd,
   error,
+  ...props
 }) {
   return (
     <>
@@ -21,13 +18,10 @@ function InputField({
             <span className="ps-2 text-gray-500 text-lg">{iconStart}</span>
           )}
           <input
-            type={type}
             id={id}
-            name={name}
-            value={value}
+            type={type}
             className={`outline-0 w-full px-3 ${className}`}
-            onChange={onChange}
-            placeholder={placeholder}
+            {...props}
           />
           {iconEnd && (
             <span className="pe-2 text-gray-500 text-lg">{iconEnd}</span>
