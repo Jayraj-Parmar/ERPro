@@ -25,13 +25,7 @@ const handleSignup = asyncHandler(async (req, res) => {
     }
     return res
       .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          { redirectTo: "/dashboard" },
-          "User already exists."
-        )
-      );
+      .json(new ApiResponse(200, { redirectTo: "/" }, "User already exists."));
   }
   // Case 1: User exists but not verified
   if (existingUser && existingUser.isVerified === false) {
@@ -134,7 +128,7 @@ const verifyEmail = async (req, res) => {
         .json(
           new ApiResponse(
             200,
-            { redirectTo: "/dashboard" },
+            { redirectTo: "/" },
             "User logged in successfully."
           )
         );
