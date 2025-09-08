@@ -11,7 +11,7 @@ function Sidebar() {
         <NavLink to="/login">
           <li>login</li>
         </NavLink>
-        <NavLink to="resend-email">
+        <NavLink to="/resend-email">
           <li>resend-email</li>
         </NavLink>
       </ul>

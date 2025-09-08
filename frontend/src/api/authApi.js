@@ -42,3 +42,6 @@ export const signupUser = (formData) => API.post("/user/signup", formData);
 
 export const resendEmail = (userEmail) =>
   API.post("/user/resend-email", userEmail);
+
+export const verifyEmail = (verificationToken) =>
+  API.get(`/user/verify-email/${verificationToken}`);
