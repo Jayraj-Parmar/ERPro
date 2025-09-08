@@ -48,7 +48,7 @@ const handleSignup = asyncHandler(async (req, res) => {
     }
 
     const verificationToken = existingUser.generateEmailVerificationToken();
-    const url = `${process.env.BASE_URL}/user/verify-email/${verificationToken}`;
+    const url = `${process.env.FRONTEND_BASE_URL}/verify-email/${verificationToken}`;
 
     await sendMail(
       existingUser.email,
@@ -87,7 +87,7 @@ const handleSignup = asyncHandler(async (req, res) => {
   }
 
   const verificationToken = user.generateEmailVerificationToken();
-  const url = `${process.env.BASE_URL}/user/verify-email/${verificationToken}`;
+  const url = `${process.env.FRONTEND_BASE_URL}/verify-email/${verificationToken}`;
   await sendMail(
     userCreated?.email,
     "Verify your email",
@@ -145,6 +145,7 @@ const verifyEmail = async (req, res) => {
         )
       );
   } catch (error) {
+    console.log(error);
     if (error.name === "TokenExpiredError") {
       return res
         .status(400)
@@ -186,7 +187,7 @@ const resendEmail = asyncHandler(async (req, res) => {
       );
   }
   const verificationToken = user.generateEmailVerificationToken();
-  const url = `${process.env.BASE_URL}/user/verify-email/${verificationToken}`;
+  const url = `${process.env.FRONTEND_BASE_URL}/verify-email/${verificationToken}`;
   await sendMail(
     user.email,
     "Resend: Verify your email",
@@ -200,7 +201,64 @@ const resendEmail = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { user }, "Verification email resent."));
 });
 
-export { handleSignup, verifyEmail, resendEmail };
+const handleLogin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const existUser = await User.findOne({ email });
+  // if (existUser?.refreshToken) {
+  //   return res
+  //     .status(200)
+  //     .json(
+  //       new ApiResponse(
+  //         200,
+  //         { redirectTo: "/" },
+  //         "User logged in successfully."
+  //       )
+  //     );
+  // }
+  if (!existUser) {
+    return res
+      .status(404)
+      .json(
+        new ApiResponse(
+          404,
+          { redirectTo: "/signup", email: email },
+          "Invalid emai or User not exist .Please Signup."
+        )
+      );
+  }
+  if (!existUser.isVerified) {
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { redirectTo: "/resend-email", email: existUser.email },
+          "Verified required"
+        )
+      );
+  }
+  const isCorrectPassword = await existUser.isPasswordCorrect(password);
+  if (!isCorrectPassword) {
+    return res
+      .status(404)
+      .json(new ApiResponse(404, null, "Password Incorrect."));
+  }
+
+  const accessToken = await existUser.generateAccessToken();
+  res.cookie("accessToken", accessToken, {
+    maxAge: ACCESS_TOKEN_EXPIRY * 1000 * 60 * 60 * 24,
+  });
+  const refreshToken = await existUser.generateRefreshToken();
+  existUser.refreshToken = refreshToken;
+  existUser.save();
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { redirectTo: "/" }, "User logged in successfully")
+    );
+});
+
+export { handleSignup, verifyEmail, resendEmail, handleLogin };
 
 //case 1:  if user is exist but not verified
 //subcase 1: Then send email with 15min timer and redirect to varification

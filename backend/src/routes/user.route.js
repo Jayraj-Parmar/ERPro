@@ -3,6 +3,7 @@ import {
   handleSignup,
   verifyEmail,
   resendEmail,
+  handleLogin,
 } from "../controllers/user.controller.js";
 import { validator } from "../middlewares/validateRequest.js";
 import { signupValidator } from "../validators/authValidator.js";
@@ -14,5 +15,7 @@ router.post("/signup", signupValidator, validator, handleSignup);
 router.get("/verify-email/:verificationToken", verifyEmail);
 
 router.post("/resend-email", resendEmail);
+
+router.post("/login", handleLogin);
 
 export default router;
