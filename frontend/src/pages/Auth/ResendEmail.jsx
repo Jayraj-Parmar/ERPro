@@ -15,7 +15,6 @@ function ResendEmail() {
     setMessage("");
     try {
       const res = await resendEmail({ email });
-      console.log(res);
       if (res.status === 200) setMessage(res.message);
     } catch (error) {
       if (error.status === 404) setMessage(error.message);

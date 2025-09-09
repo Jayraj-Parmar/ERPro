@@ -45,3 +45,5 @@ export const resendEmail = (userEmail) =>
 
 export const verifyEmail = (verificationToken) =>
   API.get(`/user/verify-email/${verificationToken}`);
+
+export const loginUser = (formData) => API.post("/user/login", formData);

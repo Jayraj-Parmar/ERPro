@@ -145,7 +145,6 @@ const verifyEmail = async (req, res) => {
         )
       );
   } catch (error) {
-    console.log(error);
     if (error.name === "TokenExpiredError") {
       return res
         .status(400)
@@ -198,34 +197,30 @@ const resendEmail = asyncHandler(async (req, res) => {
   );
   return res
     .status(200)
-    .json(new ApiResponse(200, { user }, "Verification email resent."));
+    .json(new ApiResponse(200, null, "Verification email resent."));
 });
 
 const handleLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const existUser = await User.findOne({ email });
-  // if (existUser?.refreshToken) {
-  //   return res
-  //     .status(200)
-  //     .json(
-  //       new ApiResponse(
-  //         200,
-  //         { redirectTo: "/" },
-  //         "User logged in successfully."
-  //       )
-  //     );
-  // }
   if (!existUser) {
     return res
       .status(404)
       .json(
         new ApiResponse(
           404,
-          { redirectTo: "/signup", email: email },
-          "Invalid emai or User not exist .Please Signup."
+          null,
+          "Invalid email or User not exist .Please Signup."
         )
       );
   }
+  const isCorrectPassword = await existUser.isPasswordCorrect(password);
+  if (!isCorrectPassword) {
+    return res
+      .status(404)
+      .json(new ApiResponse(404, null, "Password Incorrect."));
+  }
+
   if (!existUser.isVerified) {
     return res
       .status(200)
@@ -237,20 +232,16 @@ const handleLogin = asyncHandler(async (req, res) => {
         )
       );
   }
-  const isCorrectPassword = await existUser.isPasswordCorrect(password);
-  if (!isCorrectPassword) {
-    return res
-      .status(404)
-      .json(new ApiResponse(404, null, "Password Incorrect."));
-  }
-
   const accessToken = await existUser.generateAccessToken();
   res.cookie("accessToken", accessToken, {
-    maxAge: ACCESS_TOKEN_EXPIRY * 1000 * 60 * 60 * 24,
+    httpOnly: true,
+    secure: process.env,
+    sameSite: "strict",
+    maxAge: process.env.ACCESS_TOKEN_EXPIRY * 1000 * 60 * 60 * 24,
   });
   const refreshToken = await existUser.generateRefreshToken();
   existUser.refreshToken = refreshToken;
-  existUser.save();
+  await existUser.save();
   return res
     .status(200)
     .json(

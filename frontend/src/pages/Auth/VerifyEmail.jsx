@@ -19,7 +19,6 @@ function VerifyEmail() {
           if (error.status === 400 || error.status === 409) {
             setMessage(error?.message);
           }
-          console.log(error);
         });
     }
   }, [verificationToken, navigate]);

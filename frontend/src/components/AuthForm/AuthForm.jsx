@@ -8,8 +8,6 @@ import { TbLockPassword } from "react-icons/tb";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
 function AuthForm({ type = "login", onSubmit, serverErrors, defaultValue }) {
-  // console.log(defaultValue);
-
   const {
     register,
     handleSubmit,
