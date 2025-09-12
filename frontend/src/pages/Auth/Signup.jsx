@@ -11,9 +11,9 @@ function Signup() {
     setErrors({});
     try {
       const res = await signupUser(data);
-      if (res?.status === 200) {
-        navigate(res?.data?.redirectTo, {
-          state: { email: res?.data?.email, message: res?.message },
+      if (res?.status === 201) {
+        navigate("", {
+          state: { message: res?.message },
         });
       }
       if (res?.status === 201) {
@@ -37,8 +37,7 @@ function Signup() {
       if (error.status === 429) {
         navigate("/resend-email", {
           state: {
-            message: error?.message,
-            retryAfterMinutes: error?.data?.retryAfterMinutes,
+            message: error.message,
           },
         });
       }

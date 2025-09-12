@@ -7,7 +7,6 @@ import jwt from "jsonwebtoken";
 
 const handleSignup = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
-  const now = Date.now();
   const existingUser = await User.findOne({ email }).select("-password");
   // Case 2: User exists and verified
   if (existingUser && existingUser.isVerified === true) {
@@ -23,28 +22,24 @@ const handleSignup = asyncHandler(async (req, res) => {
         )
       );
     }
-    return res
-      .status(200)
-      .json(new ApiResponse(200, { redirectTo: "/" }, "User already exists."));
+    const { _id } = jwt.verify(
+      existingUser.refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+    if (_id == existingUser._id) {
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(200, { redirectTo: "/" }, "User already exists.")
+        );
+    }
   }
   // Case 1: User exists but not verified
   if (existingUser && existingUser.isVerified === false) {
-    const lastSent = existingUser.lastVerificationEmailSentAt;
-    const cooldownExpiresAt = new Date(
-      lastSent?.getTime() +
-        process.env.EMAIL_VERIFICATION_COOLDOWN_MINUTES * 60 * 1000
-    );
-    if (now < cooldownExpiresAt) {
-      const waitTime = Math.ceil((cooldownExpiresAt - now) / 60000);
+    if (Date.now() < existingUser.lastVerificationEmailSentAt) {
       return res
         .status(429)
-        .json(
-          new ApiResponse(
-            429,
-            { retryAfterMinutes: waitTime },
-            `Please wait ${waitTime} more minute(s) before resending verification email.`
-          )
-        );
+        .json(new ApiResponse(429, null, "Email already has been send."));
     }
 
     const verificationToken = existingUser.generateEmailVerificationToken();
@@ -74,7 +69,8 @@ const handleSignup = asyncHandler(async (req, res) => {
     name,
     email,
     password,
-    lastVerificationEmailSentAt: now,
+    lastVerificationEmailSentAt:
+      Date.now() + process.env.EMAIL_VERIFICATION_COOLDOWN_MINUTES * 1000 * 60,
   });
   const userCreated = await User.findById(user._id).select(
     "-password -refreshToken"
@@ -167,23 +163,10 @@ const resendEmail = asyncHandler(async (req, res) => {
   if (!user) {
     return res.status(404).json(new ApiResponse(404, null, "User not found"));
   }
-  const now = Date.now();
-  const lastSent = user.lastVerificationEmailSentAt;
-  const cooldownExpiresAt = new Date(
-    lastSent?.getTime() +
-      process.env.EMAIL_VERIFICATION_COOLDOWN_MINUTES * 60 * 1000
-  );
-  if (now < cooldownExpiresAt) {
-    const waitTime = Math.ceil((cooldownExpiresAt - now) / 60000);
+  if (Date.now() < user.lastVerificationEmailSentAt) {
     return res
       .status(429)
-      .json(
-        new ApiResponse(
-          429,
-          { retryAfterMinutes: waitTime },
-          `Please wait ${waitTime} more minute(s) before resending verification email.`
-        )
-      );
+      .json(new ApiResponse(429, null, "Email already has been send."));
   }
   const verificationToken = user.generateEmailVerificationToken();
   const url = `${process.env.FRONTEND_BASE_URL}/verify-email/${verificationToken}`;
@@ -195,6 +178,9 @@ const resendEmail = asyncHandler(async (req, res) => {
       <a href="${url}">Verify Email</a>
       <p>This link will expire in 5 minutes.</p>`
   );
+  user.lastVerificationEmailSentAt =
+    Date.now() + process.env.EMAIL_VERIFICATION_COOLDOWN_MINUTES * 1000 * 60;
+  await user.save();
   return res
     .status(200)
     .json(new ApiResponse(200, null, "Verification email resent."));
