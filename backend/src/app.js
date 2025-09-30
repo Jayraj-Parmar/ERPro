@@ -9,6 +9,7 @@ app.use(
     origin: process.env.CORS_ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Set-Cookie"],
     credentials: true,
   })
 );
@@ -17,9 +18,11 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser());
 
 //routes import
+import authRouter from "./routes/auth.routes.js";
 import userRouter from "./routes/user.route.js";
 
 //routes declaration
+app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 
 export { app };

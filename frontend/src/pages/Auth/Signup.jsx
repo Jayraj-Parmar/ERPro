@@ -1,55 +1,46 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import AuthForm from "../../components/AuthForm/AuthForm";
-import { signupUser } from "../../api/authApi";
+import { signup } from "../../api/authApi";
+import { useNavigate } from "react-router-dom";
 function Signup() {
-  const [errors, setErrors] = useState({});
-  const [globalError, setGlobalError] = useState();
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const signupSubmit = async (data) => {
-    setErrors({});
+  const onSubmit = async (data) => {
+    setFieldErrors({});
+    setError("");
     try {
-      const res = await signupUser(data);
-      if (res?.status === 201) {
-        navigate("", {
-          state: { message: res?.message },
-        });
-      }
-      if (res?.status === 201) {
-        navigate(res?.data?.redirectTo, {
-          state: { message: res?.message, email: res?.data?.email },
+      const res = await signup(data);
+      if (res.status === 201 || res.status === 202) {
+        navigate("/verify-email", {
+          state: { message: res.message, email: data?.email },
         });
       }
     } catch (error) {
-      if (error.status === 409) {
-        navigate(error.data?.redirectTo, {
-          state: { email: error?.data?.email, message: error?.message },
-        });
-      }
       if (error.status === 422) {
         const fieldError = {};
         error.errors.map((err) => {
           fieldError[err.path] = err.msg;
         });
-        setErrors(fieldError);
+        setFieldErrors(fieldError);
       }
-      if (error.status === 429) {
-        navigate("/resend-email", {
-          state: {
-            message: error.message,
-          },
-        });
+      if (error.status === 409) {
+        navigate("/login", { state: { message: error.message } });
       }
       if (error.status === 500) {
-        setGlobalError(error?.message);
+        setError(error.message);
       }
     }
   };
   return (
     <>
-      {globalError && <p>{globalError}</p>}
-      <AuthForm type="signup" onSubmit={signupSubmit} serverErrors={errors} />
+      <AuthForm
+        type="signup"
+        onSubmit={onSubmit}
+        fieldErrors={fieldErrors}
+        error={error}
+      />
     </>
   );
 }

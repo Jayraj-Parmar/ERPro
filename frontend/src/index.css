@@ -1,5 +1,7 @@
 * {
   font-family: "Nunito", sans-serif;
-  /* font-size: 14px; */
+}
+button:hover {
+  cursor: pointer;
 }
 @import "tailwindcss";

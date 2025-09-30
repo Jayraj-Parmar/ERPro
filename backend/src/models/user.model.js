@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 
 const userSchema = new Schema(
   {
@@ -33,7 +34,11 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    lastVerificationEmailSentAt: {
+    verificationOtp: {
+      type: String,
+      default: 0,
+    },
+    verificationOtpExpiry: {
       type: Date,
       default: null,
     },
@@ -66,7 +71,7 @@ userSchema.methods.generateAccessToken = function () {
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: `${process.env.ACCESS_TOKEN_EXPIRY}d`,
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
     }
   );
 };
@@ -83,10 +88,13 @@ userSchema.methods.generateRefreshToken = function () {
   );
 };
 
-userSchema.methods.generateEmailVerificationToken = function () {
-  return jwt.sign({ _id: this._id }, process.env.EMAIL_VERIFICATION_SECRET, {
-    expiresIn: process.env.EMAIL_VERIFICATION_EXPIRY,
-  });
+userSchema.methods.generateVerificationOtp = async function () {
+  const otp = await crypto.randomInt(100000, 999999).toString();
+  const hashedOtp = await crypto.createHash("sha256").update(otp).digest("hex");
+  const expiry = Date.now() + process.env.VERIFICATION_OTP_EXPIRY * 1000 * 60;
+  this.verificationOtp = hashedOtp;
+  this.verificationOtpExpiry = new Date(expiry);
+  return otp;
 };
 
 const User = model("User", userSchema);

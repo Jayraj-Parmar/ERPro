@@ -1,9 +1,8 @@
-import { MdOutlineErrorOutline } from "react-icons/md";
+import { TbAlertCircle } from "react-icons/tb";
 function InputField({
   label,
-  id,
   type,
-  className,
+  className = "",
   iconStart,
   iconEnd,
   error,
@@ -12,13 +11,12 @@ function InputField({
   return (
     <>
       <div>
-        {label && <label htmlFor={id}>{label}</label>}
+        {label && <label htmlFor={props.id}>{label}</label>}
         <div className="flex border-2 items-center rounded-lg border-gray-200 py-2 px-1">
           {iconStart && (
             <span className="ps-2 text-gray-500 text-lg">{iconStart}</span>
           )}
           <input
-            id={id}
             type={type}
             className={`outline-0 w-full px-3 ${className}`}
             {...props}
@@ -29,7 +27,7 @@ function InputField({
         </div>
         {error && (
           <div className="flex items-center text-red-500 mt-1">
-            <MdOutlineErrorOutline className="me-1 text-lg" /> <p>{error}</p>
+            <TbAlertCircle size={16} className="me-1" /> <p>{error}</p>
           </div>
         )}
       </div>

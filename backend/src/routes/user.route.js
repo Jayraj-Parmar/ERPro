@@ -1,21 +1,9 @@
 import { Router } from "express";
-import {
-  handleSignup,
-  verifyEmail,
-  resendEmail,
-  handleLogin,
-} from "../controllers/user.controller.js";
-import { validator } from "../middlewares/validateRequest.js";
-import { signupValidator } from "../validators/authValidator.js";
+import { userAuth } from "../middlewares/userAuth.js";
+import { getUserData } from "../controllers/user.controller.js";
 
 const router = Router();
 
-router.post("/signup", signupValidator, validator, handleSignup);
-
-router.get("/verify-email/:verificationToken", verifyEmail);
-
-router.post("/resend-email", resendEmail);
-
-router.post("/login", handleLogin);
+router.get("/data", userAuth, getUserData);
 
 export default router;
