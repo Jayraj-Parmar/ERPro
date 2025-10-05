@@ -1,7 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import {
-  TbTrolley,
   TbLayoutDashboard,
   TbUsers,
   TbUserDollar,
@@ -13,7 +12,7 @@ import {
   TbLayoutSidebarLeftCollapseFilled,
 } from "react-icons/tb";
 
-function Sidebar({ collapse, setIsOpen }) {
+function Sidebar({ collapse }) {
   const pagesList = [
     {
       key: 1,
@@ -67,46 +66,23 @@ function Sidebar({ collapse, setIsOpen }) {
 
   return (
     <>
-      <div>
-        <div
-          className={`flex justify-between items-center px-4 py-5 ${
-            collapse ? "justify-center" : ""
-          }`}
-        >
-          <div className="flex">
-            <i className={`${collapse ? "" : "me-4"} text-blue-500`}>
-              <TbTrolley size={35} />
-            </i>
-            {!collapse && <span className="font-bold text-3xl">ERPro</span>}
-          </div>
-
-          <button
-            className="bg-white p-1.5 rounded-md md:hidden block"
-            onClick={() => setIsOpen && setIsOpen(false)}
-          >
-            <i className={`text-gray-900`}>
-              <TbLayoutSidebarLeftCollapseFilled size={25} />
-            </i>
-          </button>
-        </div>
-        <ul className="px-4">
-          {pagesList.map((pageLink) => (
-            <li className="py-1" key={pageLink.key}>
-              <NavLink
-                to={pageLink.path}
-                className={({ isActive }) =>
-                  `flex items-center p-2 rounded-lg hover:bg-gray-800 ${
-                    isActive ? "bg-gray-800 text-blue-500" : ""
-                  } ${collapse ? "justify-center" : ""}`
-                }
-              >
-                <i className={`${collapse ? "" : "me-3"}`}>{pageLink.icon}</i>
-                {!collapse && pageLink.label}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul className="px-4">
+        {pagesList.map((pageLink) => (
+          <li className="py-1" key={pageLink.key}>
+            <NavLink
+              to={pageLink.path}
+              className={({ isActive }) =>
+                `flex items-center p-2 rounded-lg hover:bg-gray-800 ${
+                  isActive ? "bg-gray-800 text-blue-500" : ""
+                } ${collapse ? "justify-center" : ""}`
+              }
+            >
+              <i className={`${collapse ? "" : "me-3"}`}>{pageLink.icon}</i>
+              {!collapse && pageLink.label}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
     </>
   );
 }

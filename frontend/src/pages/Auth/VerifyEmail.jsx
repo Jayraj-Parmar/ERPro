@@ -3,9 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { resendEmail, sendOtp } from "../../api/authApi";
 import { useForm } from "react-hook-form";
 import Button from "../../components/common/Button";
+import Error from "../../components/common/Error";
 
 function VerifyEmail() {
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const location = useLocation();
@@ -13,7 +14,10 @@ function VerifyEmail() {
   const email = location.state?.email;
 
   useEffect(() => {
-    setError(location.state?.message || "");
+    setError({
+      message: location.state?.message,
+      success: location.state?.success,
+    });
   }, [location]);
 
   const handleInput = (e, index) => {
@@ -40,75 +44,85 @@ function VerifyEmail() {
   };
 
   const onSubmit = async (data) => {
+    setError({});
     try {
-      setError("");
       const otp = data.otp.join("");
       const res = await resendEmail({ email, otp });
       if (res.status === 200) {
-        navigate("/login");
+        navigate("/login", {
+          state: {
+            message: res.message,
+            success: res?.success,
+          },
+        });
       }
     } catch (error) {
       if ([400, 403, 404].includes(error.status)) {
-        setError(error.message);
+        setError({ message: error.message, success: error?.success });
       }
     }
   };
 
   const handleResend = async () => {
+    setError({});
     try {
       const res = await sendOtp({ email });
       if (res.status === 200) {
-        setError(res.message);
+        setError({ message: error.message, success: error?.success });
       }
     } catch (error) {
       if ([404, 429].includes(error.status)) {
-        setError(error.message);
+        setError({ message: error.message, success: error?.success });
       }
     }
   };
 
   return (
-    <div className="flex justify-center">
-      {error && <p className="text-red-500">{error}</p>}
-      <div className="w-2xl flex justify-center">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex justify-center mb-8">
-            {Array(6)
-              .fill(0)
-              .map((_, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  maxLength="1"
-                  className="outline-1 w-12 text-center mx-1"
-                  {...register(`otp.${index}`, { required: true })}
-                  ref={(e) => {
-                    register(`otp.${index}`).ref(e);
-                    inputRefs.current[index] = e;
-                  }}
-                  onInput={(e) => handleInput(e, index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  onPaste={(e) => handlePaste(e)}
-                />
-              ))}
+    <>
+      <div className="flex justify-center items-center h-full">
+        <div className="w-lg bg-white sm:p-10 p-6 rounded-2xl border border-gray-300">
+          <h1 className="text-center font-bold text-2xl">Verify Email</h1>
+          {error.message && <Error error={error} />}
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex justify-center py-6">
+              {Array(6)
+                .fill(0)
+                .map((_, index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    maxLength="1"
+                    className="outline-1 w-12 text-center mx-1 rounded-sm py-1"
+                    {...register(`otp.${index}`, { required: true })}
+                    ref={(e) => {
+                      register(`otp.${index}`).ref(e);
+                      inputRefs.current[index] = e;
+                    }}
+                    onInput={(e) => handleInput(e, index)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    onPaste={(e) => handlePaste(e)}
+                  />
+                ))}
+            </div>
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 text-white rounded-lg"
+            >
+              Verify
+            </Button>
+          </form>
+          <div className="text-center">
+            <Button
+              className="w-fit bg-gray-900 rounded-full text-white"
+              onClick={handleResend}
+            >
+              Resend OTP
+            </Button>
           </div>
-          <Button
-            type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded"
-          >
-            Verify
-          </Button>
-        </form>
-        <div>
-          <Button
-            onClick={handleResend}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
-          >
-            Resend OTP
-          </Button>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

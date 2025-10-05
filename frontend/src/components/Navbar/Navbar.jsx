@@ -31,15 +31,17 @@ function Navbar() {
       {
         key: "1",
         icon: <TbUser size={16} />,
-        label: <span>MyProfile</span>,
+        label: <span>My Profile</span>,
       },
-      {
-        type: "divider",
-      },
+      { type: "divider" },
       {
         key: "2",
-        icon: <TbLogout size={16} />,
-        label: <span onClick={handleLogout}>Logout</span>,
+        icon: <TbLogout size={16} className="text-red-500" />,
+        label: (
+          <span className="text-red-500" onClick={handleLogout}>
+            Logout
+          </span>
+        ),
       }
     );
   } else {
@@ -52,7 +54,7 @@ function Navbar() {
       {
         key: "4",
         icon: <TbUserPlus size={16} />,
-        label: <NavLink to="/signup">Signup</NavLink>,
+        label: <NavLink to="/signup">Sign up</NavLink>,
       }
     );
   }

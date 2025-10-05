@@ -5,17 +5,20 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AppContent } from "../../context/AppContext";
 function Login() {
   const [fieldErrors, setFieldErrors] = useState({});
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
   const { getUserData } = useContext(AppContent);
 
   useEffect(() => {
-    setError(location.state?.message);
+    setError({
+      message: location.state?.message,
+      success: location.state?.success,
+    });
   }, [location]);
 
   const onSubmit = async (data) => {
-    setError("");
+    setError({});
     setFieldErrors({});
     try {
       const res = await login(data);
@@ -28,7 +31,7 @@ function Login() {
             },
           });
         } catch (error) {
-          setError(error.message);
+          setError({ message: error.message, success: error?.success });
           return;
         }
       }
@@ -46,7 +49,7 @@ function Login() {
         setFieldErrors(fieldError);
       }
       if ([401, 404].includes(error.status)) {
-        setError(error.message);
+        setError({ message: error.message, success: error?.success });
       }
     }
   };
