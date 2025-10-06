@@ -46,7 +46,7 @@ function AuthForm({ type = "login", onSubmit, fieldErrors, error }) {
                 error={errors?.email?.message || fieldErrors.email}
                 {...register("email", {
                   required: "Email is required.",
-                  pettern: {
+                  pattern: {
                     value: "/^[^s@]+@[^s@]+.[^s@]+$/",
                     message: "Please enter a valid email address",
                   },
@@ -114,4 +114,4 @@ function AuthForm({ type = "login", onSubmit, fieldErrors, error }) {
   );
 }
 
-export default AuthForm;
+export default React.memo(AuthForm);
