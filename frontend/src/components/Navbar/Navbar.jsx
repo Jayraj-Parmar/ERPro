@@ -1,13 +1,15 @@
-import React, { useContext } from "react";
-import { Dropdown, Menu } from "antd";
-import { AppContent } from "../../context/AppContext";
+import { Dropdown } from "antd";
 import { useNavigate, NavLink } from "react-router-dom";
 import { TbLogout, TbLogin, TbUser, TbUserPlus } from "react-icons/tb";
-import { logout } from "../../api/authApi";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../../app/slices/authSlice";
 
 function Navbar() {
-  const { userData, setUserData, setIsLoggedin } = useContext(AppContent);
+  const dispatch = useDispatch();
+  const { userData } = useSelector((state) => state.auth);
+
   const navigate = useNavigate();
+
   const firstLetter =
     typeof userData?.name === "string"
       ? userData.name.charAt(0).toUpperCase()
@@ -15,9 +17,7 @@ function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await logout();
-      setUserData(null);
-      setIsLoggedin(false);
+      dispatch(logoutUser());
       navigate("/login");
     } catch (err) {
       console.error("Logout failed:", err);

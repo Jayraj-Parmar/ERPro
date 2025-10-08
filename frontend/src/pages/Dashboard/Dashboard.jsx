@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useContext } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { AppContent } from "../../context/AppContext";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../../app/slices/authSlice";
 
 function Dashboard() {
   const location = useLocation();
   const [message, setMessage] = useState();
-  const { userData, isLoggedin } = useContext(AppContent);
+
+  const dispatch = useDispatch();
+  const { userData, isLoggedin } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
 
   useEffect(() => {
     if (isLoggedin) {
@@ -17,7 +23,7 @@ function Dashboard() {
   return (
     <>
       {message && <p>{message}</p>}
-      {userData && <p>{userData.name}</p>}
+      {userData && <p>Welcome, {userData.name}</p>}
     </>
   );
 }

@@ -1,14 +1,18 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AuthForm from "../../components/AuthForm/AuthForm";
 import { login } from "../../api/authApi";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AppContent } from "../../context/AppContext";
+import { useDispatch } from "react-redux";
+import { fetchUser } from "../../app/slices/authSlice";
+
 function Login() {
+  const dispatch = useDispatch();
+
   const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState({});
+
   const navigate = useNavigate();
   const location = useLocation();
-  const { getUserData } = useContext(AppContent);
 
   useEffect(() => {
     setError({
@@ -25,7 +29,7 @@ function Login() {
         const res = await login(data);
         if (res.status === 200) {
           try {
-            await getUserData();
+            dispatch(fetchUser());
             navigate("/", {
               state: {
                 message: res.message,
@@ -54,7 +58,7 @@ function Login() {
         }
       }
     },
-    [navigate, getUserData]
+    [navigate, dispatch]
   );
   return (
     <>
