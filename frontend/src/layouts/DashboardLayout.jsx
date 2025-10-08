@@ -46,7 +46,7 @@ function DashboardLayout() {
 
       {/* --- Mobile Overlay --- */}
       <div
-        className={`md:hidden fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ${
+        className={`md:hidden fixed inset-0 bg-black z-40 transition-opacity duration-300 ${
           isOpen ? "opacity-20 visible" : "opacity-0 invisible"
         }`}
         onClick={() => setIsOpen(false)}

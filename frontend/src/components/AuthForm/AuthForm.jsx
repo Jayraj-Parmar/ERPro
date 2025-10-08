@@ -11,7 +11,7 @@ import {
   TbEyeOff,
 } from "react-icons/tb";
 import Error from "../common/Error";
-function AuthForm({ type = "login", onSubmit, fieldErrors, error }) {
+function AuthForm({ type = "login", onSubmit, fieldErrors, error, loading }) {
   const {
     register,
     handleSubmit,
@@ -20,7 +20,7 @@ function AuthForm({ type = "login", onSubmit, fieldErrors, error }) {
   const [showHidePassword, setShowHidePassword] = useState(false);
   return (
     <>
-      <div className="flex justify-center h-full items-center">
+      <div className="flex justify-center h-screen items-center">
         <div className="w-lg border bg-white border-gray-300 backdrop-blur-2xl sm:p-10 p-6 rounded-2xl">
           <h1 className="text-3xl font-bold text-center mb-6">
             {type === "signup" ? "Sign up" : "Login"}
@@ -93,6 +93,7 @@ function AuthForm({ type = "login", onSubmit, fieldErrors, error }) {
             <Button
               type="submit"
               className="font-bold w-full bg-blue-600 text-white rounded-lg"
+              loading={loading}
             >
               {type === "signup" ? "Sign up" : "Login"}
             </Button>

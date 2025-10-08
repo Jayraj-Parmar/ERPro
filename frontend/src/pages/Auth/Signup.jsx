@@ -2,7 +2,13 @@ import React, { useCallback, useState } from "react";
 import AuthForm from "../../components/AuthForm/AuthForm";
 import { signup } from "../../api/authApi";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { startLoading, stopLoading } from "../../app/slices/loadingSlice";
+
 function Signup() {
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.loading);
+
   const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState({});
   const navigate = useNavigate();
@@ -11,6 +17,7 @@ function Signup() {
     async (data) => {
       setFieldErrors({});
       setError({});
+      dispatch(startLoading());
       try {
         const res = await signup(data);
         if ([201, 202].includes(res.status)) {
@@ -38,6 +45,8 @@ function Signup() {
         if (error.status === 500) {
           setError({ message: error.message, success: error?.success });
         }
+      } finally {
+        dispatch(stopLoading());
       }
     },
     [navigate]
@@ -49,6 +58,7 @@ function Signup() {
         onSubmit={onSubmit}
         fieldErrors={fieldErrors}
         error={error}
+        loading={isLoading}
       />
     </>
   );

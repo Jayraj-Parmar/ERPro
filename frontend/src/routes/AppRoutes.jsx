@@ -10,16 +10,22 @@ import Login from "../pages/Auth/Login";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import VerifyEmail from "../pages/Auth/VerifyEmail";
+import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
 
 function AppRoutes() {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<DashboardLayout />}>
-        <Route index element={<Dashboard />} />
+      <>
         <Route path="signup" element={<Signup />} />
         <Route path="login" element={<Login />} />
         <Route path="verify-email" element={<VerifyEmail />} />
-      </Route>
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+          </Route>
+        </Route>
+      </>
     )
   );
   return (

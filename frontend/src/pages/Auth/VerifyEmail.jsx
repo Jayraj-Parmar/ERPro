@@ -80,7 +80,7 @@ function VerifyEmail() {
   return (
     <>
       <div className="flex justify-center items-center h-full">
-        <div className="w-lg bg-white sm:p-10 p-6 rounded-2xl border border-gray-300">
+        <div className="bg-white sm:p-10 p-6 rounded-2xl border border-gray-300">
           <h1 className="text-center font-bold text-2xl">Verify Email</h1>
           {error.message && <Error error={error} />}
 
@@ -93,7 +93,7 @@ function VerifyEmail() {
                     key={index}
                     type="text"
                     maxLength="1"
-                    className="outline-1 w-12 text-center mx-1 rounded-sm py-1"
+                    className="outline-1 w-8 text-center mx-1 rounded-sm py-1"
                     {...register(`otp.${index}`, { required: true })}
                     ref={(e) => {
                       register(`otp.${index}`).ref(e);
