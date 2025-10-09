@@ -33,7 +33,7 @@ function Login() {
         const res = await login(data);
         if (res.status === 200) {
           try {
-            dispatch(fetchUser());
+            await dispatch(fetchUser()).unwrap();
             navigate("/", {
               state: {
                 message: res.message,
