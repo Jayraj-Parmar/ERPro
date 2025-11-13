@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TbAlertCircle, TbX } from "react-icons/tb";
 
 function Error({ error }) {
   const [dismiss, setDismiss] = useState(false);
+  useEffect(() => {
+    setDismiss(false);
+  }, [error]);
+  if (!error || dismiss) return null;
   return (
     <div
       className={`my-7 p-2 ${
@@ -15,7 +19,13 @@ function Error({ error }) {
         <TbAlertCircle size={25} className="mr-2 shrink-0" />
         <p className="ps-2 pe-4">{error.message}</p>
       </div>
-      <button className="h-fit" onClick={() => setDismiss(true)}>
+      <button
+        className="h-fit"
+        onClick={(e) => {
+          e.preventDefault();
+          setDismiss(true);
+        }}
+      >
         <TbX size={25} className="shrink-0" />
       </button>
     </div>

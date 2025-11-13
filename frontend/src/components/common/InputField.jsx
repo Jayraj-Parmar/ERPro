@@ -11,18 +11,23 @@ function InputField({
   return (
     <>
       <div>
-        {label && <label htmlFor={props.id}>{label}</label>}
-        <div className="flex border-2 items-center rounded-lg border-gray-200 py-2 px-1">
+        {label && (
+          <label className="mb-1.5 block" htmlFor={props.id}>
+            {label}
+          </label>
+        )}
+        <div className="flex border-1 items-center rounded-md border-gray-300 bg-white py-1.5 px-3">
           {iconStart && (
-            <span className="ps-2 text-gray-500 text-lg">{iconStart}</span>
+            <span className="text-gray-500 text-lg pe-2">{iconStart}</span>
           )}
           <input
             type={type}
-            className={`outline-0 w-full px-3 ${className}`}
+            className={`outline-0 w-full ${className}`}
+            min={props.min}
             {...props}
           />
           {iconEnd && (
-            <span className="pe-2 text-gray-500 text-lg">{iconEnd}</span>
+            <span className="ps-2 text-gray-500 text-lg">{iconEnd}</span>
           )}
         </div>
         {error && (

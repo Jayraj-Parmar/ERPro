@@ -36,7 +36,7 @@ function Sidebar({ collapse }) {
       key: 4,
       label: "Products",
       icon: <TbCube size={20} />,
-      path: "/products",
+      path: "/product",
     },
     {
       key: 5,

@@ -107,14 +107,14 @@ function VerifyEmail() {
             </div>
             <Button
               type="submit"
-              className="w-full bg-blue-600 text-white rounded-lg"
+              className="w-full bg-blue-600 text-white rounded-lg mt-5"
             >
               Verify
             </Button>
           </form>
           <div className="text-center">
             <Button
-              className="w-fit bg-gray-900 rounded-full text-white"
+              className="w-fit bg-gray-900 rounded-full text-white mt-5"
               onClick={handleResend}
             >
               Resend OTP

@@ -92,7 +92,7 @@ function AuthForm({ type = "login", onSubmit, fieldErrors, error, loading }) {
             </div>
             <Button
               type="submit"
-              className="font-bold w-full bg-blue-600 text-white rounded-lg"
+              className="font-bold w-full bg-blue-600 text-white rounded-lg mt-5"
               loading={loading}
             >
               {type === "signup" ? "Sign up" : "Login"}

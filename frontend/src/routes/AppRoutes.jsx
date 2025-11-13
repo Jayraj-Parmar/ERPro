@@ -11,6 +11,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import VerifyEmail from "../pages/Auth/VerifyEmail";
 import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
+import ProductPage from "../pages/Product/ProductPage";
 
 function AppRoutes() {
   const router = createBrowserRouter(
@@ -23,6 +24,7 @@ function AppRoutes() {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<DashboardLayout />}>
             <Route index element={<Dashboard />} />
+            <Route path="product" element={<ProductPage />} />
           </Route>
         </Route>
       </>
