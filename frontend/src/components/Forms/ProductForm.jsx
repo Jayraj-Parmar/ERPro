@@ -22,7 +22,7 @@ function ProductForm() {
   return (
     <>
       <div className="text-sm">
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-2 gap-4 border border-gray-400 rounded-lg p-5 bg-white">
           {/* Name */}
           <InputField
             type="text"
@@ -74,7 +74,7 @@ function ProductForm() {
             min="1"
           />
           {/* Description */}
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <label>Description</label>
             <textarea
               {...register("description")}
@@ -83,7 +83,7 @@ function ProductForm() {
             ></textarea>
           </div>
         </div>
-        <div className="mt-5 grid sm:grid-cols-2 gap-4">
+        <div className="mt-5 grid sm:grid-cols-2 gap-4 border border-gray-400 rounded-lg p-5 bg-white">
           {/* Quantity */}
           <InputField
             type="number"
@@ -138,8 +138,7 @@ function ProductForm() {
             })}
           />
         </div>
-
-        <div className="mt-5 grid sm:grid-cols-2 gap-4">
+        <div className="mt-5 grid sm:grid-cols-2 gap-4 border border-gray-400 rounded-lg p-5 bg-white">
           <InputField
             type="date"
             id="manufacture_date"

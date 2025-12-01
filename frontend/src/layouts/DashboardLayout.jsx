@@ -16,7 +16,7 @@ function DashboardLayout() {
     <div className="flex min-h-screen overflow-hidden bg-gray-100">
       {/*Desktop Sidebar*/}
       <div
-        className={`hidden md:flex flex-col bg-gray-900 text-white transition-all duration-300 
+        className={`hidden z-50 md:flex flex-col bg-gray-900 text-white transition-all duration-300 
         ${
           toggle ? "w-20 overflow-x-hidden" : "w-64"
         } h-screen fixed left-0 top-0`}
@@ -90,35 +90,47 @@ function DashboardLayout() {
       {/* --- Main Section --- */}
       <div
         className={`flex flex-col flex-1 min-h-screen transition-all duration-300 
-        ${toggle ? "md:ml-20" : "md:ml-64"} w-full`}
+        `}
       >
         {/* Navbar */}
-        <header className="border-b border-gray-200 flex items-center justify-between shadow px-4 py-2 bg-white sticky top-0 z-30">
+        <header
+          className={`fixed top-0 z-30 border-b border-gray-200 px-4 py-2 shadow w-full bg-white `}
+        >
           {/* Toggle for desktop */}
-          <button
-            className="bg-gray-900 p-2 rounded-md text-3xl text-white md:block hidden"
-            onClick={() => setToggle((prev) => !prev)}
+          <div
+            className={`flex items-center justify-between ${
+              toggle ? "md:ml-20" : "md:ml-64"
+            }`}
           >
-            {toggle ? (
+            <button
+              className="bg-gray-900 p-2 rounded-md text-3xl text-white md:block hidden"
+              onClick={() => setToggle((prev) => !prev)}
+            >
+              {toggle ? (
+                <TbLayoutSidebarLeftExpandFilled />
+              ) : (
+                <TbLayoutSidebarLeftCollapseFilled />
+              )}
+            </button>
+
+            {/* Toggle for mobile */}
+            <button
+              className="bg-gray-900 p-2 rounded-md text-3xl text-white md:hidden block"
+              onClick={() => setIsOpen((prev) => !prev)}
+            >
               <TbLayoutSidebarLeftExpandFilled />
-            ) : (
-              <TbLayoutSidebarLeftCollapseFilled />
-            )}
-          </button>
+            </button>
 
-          {/* Toggle for mobile */}
-          <button
-            className="bg-gray-900 p-2 rounded-md text-3xl text-white md:hidden block"
-            onClick={() => setIsOpen((prev) => !prev)}
-          >
-            <TbLayoutSidebarLeftExpandFilled />
-          </button>
-
-          <Navbar collapse={toggle} setIsOpen={setIsOpen} />
+            <Navbar collapse={toggle} setIsOpen={setIsOpen} />
+          </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 overflow-y-auto">
+        <main
+          className={`flex-1 p-4 overflow-y-auto mt-16 ${
+            toggle ? "md:ml-20" : "md:ml-64"
+          }`}
+        >
           <Outlet />
         </main>
       </div>
