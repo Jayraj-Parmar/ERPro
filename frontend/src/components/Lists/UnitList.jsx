@@ -1,8 +1,8 @@
 import { TbEdit, TbTrash } from "react-icons/tb";
 import Button from "../common/Button";
 
-function UnitList({ data, onDelete, onEdit, deleteLoading, endpoint }) {
-  if (!data.length) return <p>{`No ${endpoint} Found.`}</p>;
+function UnitList({ data, onDelete, onEdit, deleteLoading, label }) {
+  if (!data.length) return <p>{`No ${label} Found.`}</p>;
   return (
     <div className="overflow-x-auto">
       <table className="w-full border border-gray-300 rounded-lg text-sm">

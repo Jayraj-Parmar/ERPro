@@ -3,6 +3,7 @@ import InputField from "../common/InputField.jsx";
 import CRUDDropdown from "../common/CRUDDropdown.jsx";
 import Button from "../common/Button.jsx";
 import Status from "../common/Status.jsx";
+import InputSelect from "../common/InputSelect.jsx";
 
 function ProductForm() {
   const {
@@ -19,10 +20,12 @@ function ProductForm() {
     },
   });
 
+  const discountType = watch("discount_type");
+
   return (
     <>
       <div className="text-sm">
-        <div className="grid sm:grid-cols-2 gap-4 border border-gray-400 rounded-lg p-5 bg-white">
+        <div className="grid lg:grid-cols-4 sm:grid-cols-2 gap-4 border border-gray-400 rounded-lg p-5 bg-white">
           {/* Name */}
           <InputField
             type="text"
@@ -52,27 +55,6 @@ function ProductForm() {
             modalType="brand"
             modalSize="max-w-6xl w-full"
           />
-          {/* Unit */}
-          <CRUDDropdown
-            label="Purchase Unit"
-            endpoint="unit"
-            modalType="unit"
-            modalSize="max-w-lg w-full"
-          />
-          <CRUDDropdown
-            label="Sale Unit"
-            endpoint="unit"
-            modalType="unit"
-            modalSize="max-w-lg w-full"
-          />
-          <InputField
-            type="number"
-            id="conversion_factor"
-            label="Conversion Factor"
-            error={errors?.conversion_factor?.message}
-            {...register("conversion_factor")}
-            min="1"
-          />
           {/* Description */}
           <div className="sm:col-span-2">
             <label>Description</label>
@@ -83,7 +65,82 @@ function ProductForm() {
             ></textarea>
           </div>
         </div>
-        <div className="mt-5 grid sm:grid-cols-2 gap-4 border border-gray-400 rounded-lg p-5 bg-white">
+        <div className="mt-5 border border-gray-400 rounded-lg p-5 bg-white">
+          <div className="bg-gray-100 p-4 rounded-lg grid lg:grid-cols-3 gap-4">
+            {/* Sale Price */}
+            <InputField
+              type="number"
+              id="sale_price"
+              label="Sale Price"
+              error={errors?.sale_price?.message}
+              {...register("sale_price", {
+                required: "Sale Price is required.",
+                valueAsNumber: true,
+              })}
+            />
+
+            {/* Conditional Discount Inputs */}
+            {discountType === "percentage" && (
+              <InputField
+                type="number"
+                id="discount_percentage"
+                label="Discount (%)"
+                error={errors?.discount_percentage?.message}
+                {...register("discount_percentage", {
+                  min: 0,
+                  max: 100,
+                  valueAsNumber: true,
+                })}
+              />
+            )}
+
+            {discountType === "amount" && (
+              <InputField
+                type="number"
+                id="discount_amount"
+                label="Discount Amount"
+                error={errors?.discount_amount?.message}
+                {...register("discount_amount", {
+                  min: 0,
+                  valueAsNumber: true,
+                })}
+              />
+            )}
+
+            {/* Discount Type */}
+            <InputSelect
+              id="discount_type"
+              label="Discount Type"
+              options={["percentage", "amount"]}
+              error={errors?.discount_type?.message}
+              {...register("discount_type")}
+            />
+          </div>
+          <div className="grid lg:grid-cols-2 gap-4 mt-5">
+            {/* Purchase Price */}
+            <div className="bg-gray-100 p-4 rounded-lg">
+              <InputField
+                type="text"
+                id="purchase_price"
+                label="Purchase Price"
+                error={errors?.purchase_price?.message}
+                {...register("purchase_price", {
+                  required: "Purchase Price is required.",
+                })}
+              />
+            </div>
+            {/* Purchase Price */}
+            <div className="bg-gray-100 p-4 rounded-lg">
+              <CRUDDropdown
+                label="Tax Rate"
+                endpoint="taxrate"
+                modalType="taxrate"
+                modalSize="max-w-lg w-full"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="mt-5 grid lg:grid-cols-3 sm:grid-cols-2 gap-4 border border-gray-400 rounded-lg p-5 bg-white">
           {/* Quantity */}
           <InputField
             type="number"
@@ -117,28 +174,31 @@ function ProductForm() {
             })}
             min="0"
           />
-          {/* Purchase Price */}
-          <InputField
-            type="text"
-            id="purchase_price"
-            label="Purchase Price"
-            error={errors?.purchase_price?.message}
-            {...register("purchase_price", {
-              required: "Purchase Price is required.",
-            })}
+        </div>
+        <div className="mt-5 grid lg:grid-cols-3 sm:grid-cols-2 gap-4 border border-gray-400 rounded-lg p-5 bg-white">
+          {/* Unit */}
+          <CRUDDropdown
+            label="Purchase Unit"
+            endpoint="unit"
+            modalType="unit"
+            modalSize="max-w-lg w-full"
           />
-          {/* Sale Price */}
+          <CRUDDropdown
+            label="Sale Unit"
+            endpoint="unit"
+            modalType="unit"
+            modalSize="max-w-lg w-full"
+          />
           <InputField
-            type="text"
-            id="sale_price"
-            label="Sale Price"
-            error={errors?.sale_price?.message}
-            {...register("sale_price", {
-              required: "Sale Price is required.",
-            })}
+            type="number"
+            id="conversion_factor"
+            label="Conversion Factor"
+            error={errors?.conversion_factor?.message}
+            {...register("conversion_factor")}
+            min="1"
           />
         </div>
-        <div className="mt-5 grid sm:grid-cols-2 gap-4 border border-gray-400 rounded-lg p-5 bg-white">
+        <div className="mt-5 grid lg:grid-cols-3 sm:grid-cols-2 gap-4 border border-gray-400 rounded-lg p-5 bg-white">
           <InputField
             type="date"
             id="manufacture_date"

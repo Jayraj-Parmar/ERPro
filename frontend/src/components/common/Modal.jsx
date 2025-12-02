@@ -4,7 +4,7 @@ function Modal({ open, onClose, heading, size = "w-[600px]", children }) {
   if (!open) return null;
 
   return (
-    <div className="bg-black/50 fixed top-0 left-0 flex justify-center w-full h-full z-40">
+    <div className="bg-black/50 fixed top-0 left-0 flex justify-center w-full h-full z-50">
       <div
         className={`bg-white rounded-lg shadow-lg flex flex-col ${size} max-h-[90vh]`}
       >

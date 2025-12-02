@@ -1,7 +1,7 @@
 import { TbEdit, TbTrash } from "react-icons/tb";
 import Button from "../common/Button";
 
-function UnitList({ data, onDelete, onEdit, deleteLoading, label }) {
+function TaxRateList({ data, onDelete, onEdit, deleteLoading, label }) {
   if (!data.length) return <p>{`No ${label} Found.`}</p>;
   return (
     <div className="overflow-x-auto">
@@ -10,7 +10,7 @@ function UnitList({ data, onDelete, onEdit, deleteLoading, label }) {
           <tr className="bg-gray-100 border-b">
             <th className="py-2 px-3 text-left">#</th>
             <th className="py-2 px-3 text-left">Name</th>
-            <th className="py-2 px-3 text-left">Description</th>
+            <th className="py-2 px-3 text-left">Rate</th>
             <th className="py-2 px-3 text-left">Status</th>
             <th className="py-2 px-3 text-center">Actions</th>
           </tr>
@@ -22,8 +22,8 @@ function UnitList({ data, onDelete, onEdit, deleteLoading, label }) {
               className="border-b hover:bg-blue-50 transition-colors"
             >
               <td className="py-2 px-3">{index + 1}</td>
-              <td className="py-2 px-3">{item.name || "NA"}</td>
-              <td className="py-2 px-3">{item.description || "NA"}</td>
+              <td className="py-2 px-3">{item.name}</td>
+              <td className="py-2 px-3">{item.rate + " %"}</td>
               <td
                 className={`py-2 px-3 font-semibold ${
                   item.status === "active" ? "text-green-600" : "text-gray-500"
@@ -58,4 +58,4 @@ function UnitList({ data, onDelete, onEdit, deleteLoading, label }) {
   );
 }
 
-export default UnitList;
+export default TaxRateList;

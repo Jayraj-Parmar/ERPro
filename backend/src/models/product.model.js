@@ -12,7 +12,13 @@ const productSchema = new Schema(
     // Pricing
     purchase_price: { type: Number, required: true, min: 0 },
     sale_price: { type: Number, required: true, min: 0 },
-    // discount: { type: Number, required: true, default: 0, min: 0, max: 100 },
+    discount_type: {
+      type: String,
+      enum: ["percentage", "amount"],
+      default: "percentage",
+    },
+    discount_percentage: { type: Number, default: 0, min: 0, max: 100 },
+    discount_amount: { type: Number, default: 0, min: 0 },
     // tax_rate_id: { type: Schema.Types.ObjectId, ref: "TaxRate" },
     // Stock
     opening_stock: { type: Number, required: true, default: 0, min: 0 },

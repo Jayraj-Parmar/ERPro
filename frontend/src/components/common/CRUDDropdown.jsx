@@ -10,6 +10,7 @@ import WarehouseModalContainer from "../ModalContainers/WarehouseModalContainer"
 import UnitModalContainer from "../ModalContainers/UnitModalContainer";
 import BrandModalContainer from "../ModalContainers/BrandModalContainer";
 import CategoryModalContainer from "../ModalContainers/CategoryModalContainer";
+import TaxRateModalContainer from "../ModalContainers/TaxRateModalContainer";
 
 function CRUDDropdown({ label, endpoint, modalType, modalSize, ...props }) {
   const dispatch = useDispatch();
@@ -82,6 +83,10 @@ function CRUDDropdown({ label, endpoint, modalType, modalSize, ...props }) {
               } else if (endpoint === "brand") {
                 return (
                   <BrandModalContainer label={label} endpoint={endpoint} />
+                );
+              } else if (endpoint === "taxrate") {
+                return (
+                  <TaxRateModalContainer label={label} endpoint={endpoint} />
                 );
               }
             })()}
