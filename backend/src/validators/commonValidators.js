@@ -4,8 +4,8 @@ export const nameValidator = body("name")
   .trim()
   .notEmpty()
   .withMessage("Name is required.")
-  .isLength({ min: 2 })
-  .withMessage("Name must be at least 2 characters.");
+  .isLength({ min: 1 })
+  .withMessage("Name must be at least 1 characters.");
 
 export const emailValidator = body("email")
   .trim()

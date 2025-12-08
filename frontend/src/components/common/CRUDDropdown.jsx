@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { openModal, closeModal } from "../../app/slices/modalSlice";
 import { fetchData } from "../../app/slices/CrudSlice";
 import Modal from "./Modal";
-import Crud from "../crud/crud";
 import WarehouseModalContainer from "../ModalContainers/WarehouseModalContainer";
 import UnitModalContainer from "../ModalContainers/UnitModalContainer";
 import BrandModalContainer from "../ModalContainers/BrandModalContainer";
@@ -24,7 +23,9 @@ function CRUDDropdown({ label, endpoint, modalType, modalSize, ...props }) {
     dispatch(fetchData(endpoint));
   }, [dispatch]);
 
-  const options = list.map((item) => ({ value: item._id, label: item.name }));
+  const options = list
+    .filter((item) => item.status === "active")
+    .map((item) => ({ value: item._id, label: item.name }));
 
   const handleManage = () => {
     dispatch(openModal({ modalType }));
@@ -59,6 +60,12 @@ function CRUDDropdown({ label, endpoint, modalType, modalSize, ...props }) {
         options={options}
         components={{ MenuList: CustomMenuList }}
         placeholder={`Select or Add ${label}`}
+        value={options.find((opt) => opt.value === props.value) || null}
+        onChange={(selectedOption) => {
+          if (props.onChange) {
+            props.onChange(selectedOption);
+          }
+        }}
       />
 
       {isCurrentModalOpen && (

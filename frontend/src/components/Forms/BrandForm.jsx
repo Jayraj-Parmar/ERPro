@@ -22,6 +22,7 @@ function BrandForm({
     reset,
     formState: { errors },
   } = useForm({
+    mode: "onChange",
     defaultValues: {
       name: "",
       contact_person: "",
@@ -58,7 +59,7 @@ function BrandForm({
 
       <form
         onSubmit={handleSubmit(submitHandler)}
-        className="mb-6 py-4 md:grid grid-cols-2 gap-x-8 gap-y-4"
+        className="mb-6 py-4 grid sm:grid-cols-2 gap-x-8 gap-y-4"
       >
         <InputField
           type="text"
@@ -68,18 +69,46 @@ function BrandForm({
         />
         <InputField
           type="text"
+          error={errors?.contact_person?.message}
           label="Contact Person"
           {...register("contact_person")}
         />
         <InputField
           type="text"
+          error={errors?.contact_number?.message}
           label="Contact Number"
-          {...register("contact_number")}
+          {...register("contact_number", {
+            pattern: {
+              value: /^[6-9]\d{9}$/,
+              message: "Enter a valid 10-digit mobile number",
+            },
+          })}
         />
-        <InputField type="email" label="Email" {...register("email")} />
-        <InputField type="text" label="Website" {...register("website")} />
+        <InputField
+          type="email"
+          label="Email"
+          error={errors?.email?.message}
+          {...register("email", {
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Enter a valid email address",
+            },
+          })}
+        />
+        <InputField
+          type="text"
+          label="Website"
+          error={errors?.website?.message}
+          {...register("website", {
+            pattern: {
+              value:
+                /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/,
+              message: "Enter a valid website URL",
+            },
+          })}
+        />
 
-        <div className="col-span-2">
+        <div className="sm:col-span-2">
           <label>Description</label>
           <textarea
             {...register("description")}

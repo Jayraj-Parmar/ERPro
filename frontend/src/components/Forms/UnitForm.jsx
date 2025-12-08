@@ -43,7 +43,7 @@ function UnitForm({
         <div className="mb-6 py-4 grid gap-4">
           <InputField
             type="text"
-            label={`${label} Name`}
+            label={`Unit Name`}
             error={errors?.name?.message}
             {...register("name", { required: `${label} name is required.` })}
           />

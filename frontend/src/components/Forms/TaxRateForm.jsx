@@ -21,6 +21,7 @@ function TaxRateForm({
     formState: { errors },
     reset,
   } = useForm({
+    mode: "onChange",
     defaultValues: editData || {
       name: "",
       rate: "",
@@ -56,6 +57,16 @@ function TaxRateForm({
             error={errors?.rate?.message}
             {...register("rate", {
               required: `Tax Rate is required.`,
+              setValueAs: (v) => (v === "" ? null : Number(v)),
+              min: {
+                value: 1,
+                message: "Tax rate cannot be negative.",
+              },
+              validate: (value) => {
+                if (isNaN(value)) {
+                  return "Tax rate must be a valid number";
+                }
+              },
             })}
           />
           <Status watch={watch} control={control} />
