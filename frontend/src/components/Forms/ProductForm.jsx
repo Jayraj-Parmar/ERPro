@@ -6,10 +6,14 @@ import Button from "../common/Button.jsx";
 import Status from "../common/Status.jsx";
 import InputSelect from "../common/InputSelect.jsx";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { createData } from "../../app/slices/CrudSlice.js";
-
+import { useDispatch, useSelector } from "react-redux";
+import { createProduct } from "../../app/slices/productSlice.js";
+import Error from "../common/Error.jsx";
 function ProductForm() {
+  const dispatch = useDispatch();
+
+  const { error, success } = useSelector((state) => state.product);
+
   const {
     watch,
     control,
@@ -17,14 +21,19 @@ function ProductForm() {
     formState: { errors },
     setValue,
     handleSubmit,
+    reset,
   } = useForm({
     mode: "onChange",
+    shouldUnregister: true,
     defaultValues: {
       conversion_factor: 1,
       opening_stock: 0,
       minimum_order_quantity: 0,
       reorder_level: 0,
       status: "active",
+      sale_price_type: "without tax",
+      discount_type: "percentage",
+      purchase_price_type: "without tax",
     },
   });
 
@@ -32,9 +41,13 @@ function ProductForm() {
   const salePriceType = watch("sale_price_type");
   const purchasePriceType = watch("purchase_price_type");
 
-  const formatNumber = (v) => (v === "" ? undefined : Number(v));
+  const formatNumber = (v) =>
+    v === "" || v === null || v === undefined ? undefined : Number(v);
 
-  const dispatch = useDispatch();
+  const isValidNumber = (value) => {
+    if (value === undefined || value === null || value === "") return true;
+    return /^\d+(\.\d+)?$/.test(value) || "Enter a valid number";
+  };
 
   useEffect(() => {
     if (discountType === "percentage") {
@@ -60,15 +73,52 @@ function ProductForm() {
     }
   }, [purchasePriceType]);
 
-  const onSubmit = async (formData) => {
-    await dispatch(
-      createData({ endpoint: "product", payload: formData })
-    ).unwrap();
+  const onSubmit = async (data) => {
+    try {
+      await dispatch(createProduct(data)).unwrap();
+      reset({
+        name: "",
+        description: "",
+        warehouse_location_id: null,
+        category_id: null,
+        brand_id: null,
+        tax_rate_id: null,
+
+        sale_price_type: "without tax",
+        default_sale_price_without_tax: undefined,
+        default_sale_price_with_tax: undefined,
+
+        discount_type: "percentage",
+        discount_percentage: undefined,
+        discount_amount: undefined,
+
+        opening_stock: 0,
+        opening_stock_date: undefined,
+
+        purchase_price_type: "without tax",
+        opening_purchase_price_without_tax: undefined,
+        opening_purchase_price_with_tax: undefined,
+
+        minimum_order_quantity: 0,
+        reorder_level: 0,
+
+        manufacture_date: undefined,
+        expiry_date: undefined,
+
+        purchase_unit: null,
+        sale_unit: null,
+        conversion_factor: 1,
+        status: "active",
+      });
+    } catch (error) {
+      //Nothing
+    }
   };
 
   return (
     <>
-      <div className="text-sm">
+      {(error || success) && <Error error={error || success} />}
+      <div className="">
         <div className="grid lg:grid-cols-4 sm:grid-cols-2 gap-4 border border-gray-400 rounded-lg p-5 bg-white">
           {/* Name */}
           <InputField
@@ -138,13 +188,25 @@ function ProductForm() {
             <Controller
               name="tax_rate_id"
               control={control}
-              render={({ field }) => (
+              rules={{
+                validate: (value) => {
+                  if (
+                    !value &&
+                    (watch("default_sale_price_with_tax") ||
+                      watch("opening_purchase_price_with_tax"))
+                  ) {
+                    return "Taxrate is required.";
+                  }
+                },
+              }}
+              render={({ field, fieldState }) => (
                 <CRUDDropdown
                   label="Tax Rate"
                   endpoint="taxrate"
                   modalType="taxrate"
                   modalSize="max-w-lg w-full"
                   value={field.value}
+                  error={fieldState.error?.message}
                   onChange={(option) => field.onChange(option?.value)}
                 />
               )}
@@ -159,7 +221,7 @@ function ProductForm() {
                 id="sale_price_type"
                 label="Sale Price Type"
                 options={["with tax", "without tax"]}
-                error={errors?.discount_type?.message}
+                error={errors?.sale_price_type?.message}
                 {...register("sale_price_type")}
               />
               {/* Sale Price */}
@@ -174,12 +236,17 @@ function ProductForm() {
                     required: "Sale Price is required.",
                     setValueAs: formatNumber,
                     min: {
-                      value: 1,
+                      value: 0,
                       message: "Sale Price cannot be negative.",
                     },
                     validate: (value) => {
-                      if (isNaN(value)) {
-                        return "Sale Price must be a valid number";
+                      const numberValidatoin = isValidNumber(value);
+                      if (numberValidatoin !== true) return numberValidatoin;
+                      if (
+                        watch("opening_purchase_price_without_tax") &&
+                        value < watch("opening_purchase_price_without_tax")
+                      ) {
+                        return "Sale price must be greater than purchase price";
                       }
                     },
                   })}
@@ -196,12 +263,17 @@ function ProductForm() {
                     required: "Sale Price is required.",
                     setValueAs: formatNumber,
                     min: {
-                      value: 1,
+                      value: 0,
                       message: "Sale Price cannot be negative.",
                     },
                     validate: (value) => {
-                      if (isNaN(value)) {
-                        return "Sale Price must be a valid number";
+                      const numberValidatoin = isValidNumber(value);
+                      if (numberValidatoin !== true) return numberValidatoin;
+                      if (
+                        watch("opening_purchase_price_with_tax") &&
+                        value < watch("opening_purchase_price_with_tax")
+                      ) {
+                        return "Sale price must be greater than purchase price";
                       }
                     },
                   })}
@@ -213,7 +285,7 @@ function ProductForm() {
               <InputSelect
                 id="discount_type"
                 label="Discount Type"
-                options={["none", "percentage", "amount"]}
+                options={["percentage", "amount"]}
                 error={errors?.discount_type?.message}
                 {...register("discount_type")}
               />
@@ -235,9 +307,8 @@ function ProductForm() {
                       message: "Discount cannot be grater than 100% ",
                     },
                     validate: (value) => {
-                      if (isNaN(value)) {
-                        return "Discount must be a valid number";
-                      }
+                      const numberValidatoin = isValidNumber(value);
+                      if (numberValidatoin !== true) return numberValidatoin;
                     },
                     setValueAs: formatNumber,
                   })}
@@ -255,16 +326,14 @@ function ProductForm() {
                       value: 0,
                       message: "Discount cannot be nagetive ",
                     },
-                    max: {
-                      value:
-                        watch("default_sale_price_without_tax") ||
-                        watch("default_sale_price_with_tax") ||
-                        0,
-                      message: "Discount cannot be grater than sale price",
-                    },
                     validate: (value) => {
-                      if (isNaN(value)) {
-                        return "Discount must be a valid number";
+                      const numberValidatoin = isValidNumber(value);
+                      if (numberValidatoin !== true) return numberValidatoin;
+                      const salePrice =
+                        watch("default_sale_price_without_tax") ??
+                        watch("default_sale_price_with_tax");
+                      if (value > salePrice) {
+                        return "Discount cannot be greater than sale price";
                       }
                     },
                     setValueAs: formatNumber,
@@ -321,13 +390,12 @@ function ProductForm() {
               {...register("opening_purchase_price_without_tax", {
                 setValueAs: formatNumber,
                 min: {
-                  value: 1,
+                  value: 0,
                   message: "Purchase Price cannot be negative.",
                 },
                 validate: (value) => {
-                  if (isNaN(value)) {
-                    return "Purchase Price must be a valid number";
-                  }
+                  const numberValidatoin = isValidNumber(value);
+                  if (numberValidatoin !== true) return numberValidatoin;
                   if (watch("opening_stock") > 0 && !value) {
                     return "Purchase price is required";
                   }
@@ -345,13 +413,12 @@ function ProductForm() {
               {...register("opening_purchase_price_with_tax", {
                 setValueAs: formatNumber,
                 min: {
-                  value: 1,
+                  value: 0,
                   message: "Purchase price cannot be negative.",
                 },
                 validate: (value) => {
-                  if (isNaN(value)) {
-                    return "Purchase price must be a valid number";
-                  }
+                  const numberValidatoin = isValidNumber(value);
+                  if (numberValidatoin !== true) return numberValidatoin;
                   if (watch("opening_stock") > 0 && !value) {
                     return "Purchase price is required";
                   }

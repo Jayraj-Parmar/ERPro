@@ -13,13 +13,11 @@ function DashboardLayout() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen overflow-hidden bg-gray-100">
+    <div className="grid min-h-screen bg-gray-100 md:grid-cols-[auto_1fr]">
       {/*Desktop Sidebar*/}
       <div
         className={`hidden z-50 md:flex flex-col bg-gray-900 text-white transition-all duration-300 
-        ${
-          toggle ? "w-20 overflow-x-hidden" : "w-64"
-        } h-screen fixed left-0 top-0`}
+        ${toggle ? "w-20 overflow-x-hidden" : "w-64"} h-screen sticky top-0`}
       >
         <div
           className={`flex-shrink-0 sticky top-0 z-10 bg-gray-900 flex items-center px-4 py-3.5 border-b border-gray-800 ${
@@ -88,20 +86,11 @@ function DashboardLayout() {
       </div>
 
       {/* --- Main Section --- */}
-      <div
-        className={`flex flex-col flex-1 min-h-screen transition-all duration-300 
-        `}
-      >
+      <div className="flex flex-col h-screen min-h-0 transition-all duration-300">
         {/* Navbar */}
-        <header
-          className={`fixed top-0 z-30 border-b border-gray-200 px-4 py-2 shadow w-full bg-white `}
-        >
+        <header className="sticky top-0 z-30 border-b border-gray-200 px-4 py-2 shadow bg-white">
           {/* Toggle for desktop */}
-          <div
-            className={`flex items-center justify-between ${
-              toggle ? "md:ml-20" : "md:ml-64"
-            }`}
-          >
+          <div className="flex items-center justify-between">
             <button
               className="bg-gray-900 p-2 rounded-md text-3xl text-white md:block hidden"
               onClick={() => setToggle((prev) => !prev)}
@@ -126,11 +115,7 @@ function DashboardLayout() {
         </header>
 
         {/* Page Content */}
-        <main
-          className={`flex-1 p-4 overflow-y-auto mt-16 ${
-            toggle ? "md:ml-20" : "md:ml-64"
-          }`}
-        >
+        <main className="flex-1 p-4 overflow-y-auto min-h-0">
           <Outlet />
         </main>
       </div>

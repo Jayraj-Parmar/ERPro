@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 
 const productSchema = new Schema(
   {
-    name: { type: String, required: true, unique: true, trim: true },
+    name: { type: String, required: true, trim: true },
     description: { type: String, trim: true },
     category_id: { type: Schema.Types.ObjectId, ref: "Category" },
     brand_id: { type: Schema.Types.ObjectId, ref: "Brand" },
@@ -24,8 +24,8 @@ const productSchema = new Schema(
     //Discount
     discount_type: {
       type: String,
-      enum: ["none", "percentage", "amount"],
-      default: "none",
+      enum: ["percentage", "amount"],
+      default: "percentage",
     },
     discount_percentage: { type: Number, default: 0, min: 0, max: 100 },
     discount_amount: { type: Number, default: 0, min: 0 },
@@ -59,6 +59,15 @@ const productSchema = new Schema(
     created_by: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
+);
+
+productSchema.index(
+  { name: 1 },
+  {
+    unique: true,
+    collation: { locale: "en", strength: 2 },
+    partialFilterExpression: { is_deleted: false },
+  }
 );
 
 export const Product = model("Product", productSchema);

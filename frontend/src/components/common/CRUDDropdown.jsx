@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Select, { components } from "react-select";
-import { TbSettings } from "react-icons/tb";
+import { TbSettings, TbAlertCircle } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal, closeModal } from "../../app/slices/modalSlice";
 import { fetchData } from "../../app/slices/CrudSlice";
@@ -11,7 +11,14 @@ import BrandModalContainer from "../ModalContainers/BrandModalContainer";
 import CategoryModalContainer from "../ModalContainers/CategoryModalContainer";
 import TaxRateModalContainer from "../ModalContainers/TaxRateModalContainer";
 
-function CRUDDropdown({ label, endpoint, modalType, modalSize, ...props }) {
+function CRUDDropdown({
+  label,
+  endpoint,
+  modalType,
+  modalSize,
+  error,
+  ...props
+}) {
   const dispatch = useDispatch();
   const { isOpen, modalType: currentModalType } = useSelector(
     (state) => state.modal
@@ -67,6 +74,12 @@ function CRUDDropdown({ label, endpoint, modalType, modalSize, ...props }) {
           }
         }}
       />
+
+      {error && (
+        <div className="flex items-center text-red-500 mt-1">
+          <TbAlertCircle size={16} className="me-1" /> <p>{error}</p>
+        </div>
+      )}
 
       {isCurrentModalOpen && (
         <Modal

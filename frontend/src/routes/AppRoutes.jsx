@@ -12,6 +12,7 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import VerifyEmail from "../pages/Auth/VerifyEmail";
 import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
 import ProductPage from "../pages/Product/ProductPage";
+import CustomerPage from "../pages/Customer/CustomerPage";
 
 function AppRoutes() {
   const router = createBrowserRouter(
@@ -25,6 +26,7 @@ function AppRoutes() {
           <Route path="/" element={<DashboardLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="product" element={<ProductPage />} />
+            <Route path="customer" element={<CustomerPage />} />
           </Route>
         </Route>
       </>

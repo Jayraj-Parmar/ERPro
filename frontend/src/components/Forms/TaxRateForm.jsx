@@ -4,15 +4,7 @@ import Status from "../common/Status";
 import Button from "../common/Button";
 import { useEffect } from "react";
 
-function TaxRateForm({
-  onSubmit,
-  label,
-  loading,
-  editData,
-  error,
-  success,
-  resetSignal,
-}) {
+function TaxRateForm({ onSubmit, label, loading, editData, resetSignal }) {
   const {
     handleSubmit,
     control,
@@ -41,7 +33,6 @@ function TaxRateForm({
 
   return (
     <>
-      {(error || success) && <Error error={error || success} />}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-6 py-4 grid sm:grid-cols-2 gap-4">
           <InputField
@@ -59,7 +50,7 @@ function TaxRateForm({
               required: `Tax Rate is required.`,
               setValueAs: (v) => (v === "" ? null : Number(v)),
               min: {
-                value: 1,
+                value: 0,
                 message: "Tax rate cannot be negative.",
               },
               validate: (value) => {

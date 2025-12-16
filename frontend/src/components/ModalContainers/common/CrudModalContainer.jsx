@@ -37,7 +37,6 @@ function CrudModalContainer({ endpoint, label, FormComponent, ListComponent }) {
       await dispatch(createData({ endpoint, payload: formData })).unwrap();
       setResetSignal((prev) => !prev);
     }
-    dispatch(fetchData(endpoint));
   };
 
   const handleDelete = async (id) => {

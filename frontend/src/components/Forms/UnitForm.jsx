@@ -4,15 +4,7 @@ import InputField from "../common/InputField";
 import Button from "../common/Button";
 import Status from "../common/Status";
 
-function UnitForm({
-  label,
-  loading,
-  onSubmit,
-  editData,
-  resetSignal,
-  error,
-  success,
-}) {
+function UnitForm({ label, loading, onSubmit, editData, resetSignal }) {
   const {
     control,
     register,
@@ -38,7 +30,6 @@ function UnitForm({
   }, [editData, resetSignal, reset]);
   return (
     <>
-      {(error || success) && <Error error={error || success} />}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-6 py-4 grid gap-4">
           <InputField

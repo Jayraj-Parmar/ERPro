@@ -4,15 +4,7 @@ import Button from "../common/Button";
 import Status from "../common/Status";
 import { useEffect } from "react";
 
-function WarehouseForm({
-  onSubmit,
-  editData,
-  loading,
-  label,
-  resetSignal,
-  error,
-  success,
-}) {
+function WarehouseForm({ onSubmit, editData, loading, label, resetSignal }) {
   const {
     watch,
     control,
@@ -55,7 +47,6 @@ function WarehouseForm({
 
   return (
     <>
-      {(error || success) && <Error error={error || success} />}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mb-6 py-4 grid sm:grid-cols-2 gap-x-8 gap-y-4"

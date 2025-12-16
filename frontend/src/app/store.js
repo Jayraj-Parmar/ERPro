@@ -3,6 +3,7 @@ import authReducer from "./slices/authSlice";
 import loadingReducer from "./slices/loadingSlice";
 import modalReducer from "./slices/modalSlice";
 import crudReducer from "./slices/CrudSlice";
+import productReducer from "./slices/productSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     loading: loadingReducer,
     modal: modalReducer,
     crud: crudReducer,
+    product: productReducer,
   },
 });

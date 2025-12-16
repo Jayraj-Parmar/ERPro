@@ -2,18 +2,9 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
-import Error from "../common/Error";
 import Status from "../common/Status";
 
-function BrandForm({
-  onSubmit,
-  loading,
-  editData,
-  label,
-  error,
-  success,
-  resetSignal,
-}) {
+function BrandForm({ onSubmit, loading, editData, label, resetSignal }) {
   const {
     watch,
     control,
@@ -55,8 +46,6 @@ function BrandForm({
 
   return (
     <>
-      {(error || success) && <Error error={error || success} />}
-
       <form
         onSubmit={handleSubmit(submitHandler)}
         className="mb-6 py-4 grid sm:grid-cols-2 gap-x-8 gap-y-4"

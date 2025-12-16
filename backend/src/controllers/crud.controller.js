@@ -9,10 +9,9 @@ export class CRUDController {
   }
 
   create = asyncHandler(async (req, res) => {
-    const { name, ...data } = req.body;
+    const data = req.body;
     try {
       const created = await this.Model.create({
-        name,
         ...data,
         created_by: req.user?._id,
       });
