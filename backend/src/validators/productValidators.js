@@ -6,4 +6,4 @@ const reorderValidator = body("reorder_level")
   .notEmpty()
   .withMessage("Reorder level is required.");
 
-export const productValidator = [nameValidator, reorderValidator];
+export const productValidator = [nameValidator("name"), reorderValidator];

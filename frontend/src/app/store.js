@@ -4,6 +4,7 @@ import loadingReducer from "./slices/loadingSlice";
 import modalReducer from "./slices/modalSlice";
 import crudReducer from "./slices/CrudSlice";
 import productReducer from "./slices/productSlice";
+import locationReducer from "./slices/locationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     modal: modalReducer,
     crud: crudReducer,
     product: productReducer,
+    location: locationReducer,
   },
 });

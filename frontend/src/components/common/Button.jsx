@@ -1,7 +1,7 @@
 function Button({ className, type, children, disabled, onClick, loading }) {
   return (
     <button
-      className={`py-2 px-4 ${className}`}
+      className={`p-2 ${className}`}
       type={type}
       disabled={disabled}
       onClick={onClick}

@@ -32,7 +32,7 @@ function InputField({
         </div>
         {error && (
           <div className="flex items-center text-red-500 mt-1">
-            <TbAlertCircle size={16} className="me-1" /> <p>{error}</p>
+            <TbAlertCircle size={16} className="me-1 shrink-0" /> <p>{error}</p>
           </div>
         )}
       </div>

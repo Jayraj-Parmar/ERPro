@@ -1,5 +1,5 @@
 import React from "react";
-import PartyForm from "../PartyForm/PartyForm";
+import PartyForm from "../Party/PartyForm";
 
 function CustomerForm() {
   return (

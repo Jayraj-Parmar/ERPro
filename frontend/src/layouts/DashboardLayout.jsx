@@ -86,7 +86,7 @@ function DashboardLayout() {
       </div>
 
       {/* --- Main Section --- */}
-      <div className="flex flex-col h-screen min-h-0 transition-all duration-300">
+      <div className="flex flex-col h-screen min-h-0 min-w-0 transition-all duration-300">
         {/* Navbar */}
         <header className="sticky top-0 z-30 border-b border-gray-200 px-4 py-2 shadow bg-white">
           {/* Toggle for desktop */}
@@ -115,7 +115,7 @@ function DashboardLayout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 overflow-y-auto min-h-0">
+        <main className="flex-1 p-4 overflow-auto min-h-0 min-w-0">
           <Outlet />
         </main>
       </div>

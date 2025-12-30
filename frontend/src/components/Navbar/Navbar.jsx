@@ -61,21 +61,13 @@ function Navbar() {
 
   return (
     <nav>
-      <ul className="flex items-center gap-4">
-        <li>
-          <Dropdown
-            menu={{ items }}
-            trigger={["click"]}
-            placement="bottomRight"
-          >
-            <a onClick={(e) => e.preventDefault()}>
-              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white text-lg cursor-pointer">
-                {firstLetter ? firstLetter : <TbUser size={22} />}
-              </span>
-            </a>
-          </Dropdown>
-        </li>
-      </ul>
+      <Dropdown menu={{ items }} trigger={["click"]} placement="bottomRight">
+        <a onClick={(e) => e.preventDefault()}>
+          <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white text-lg cursor-pointer">
+            {firstLetter ? firstLetter : <TbUser size={22} />}
+          </span>
+        </a>
+      </Dropdown>
     </nav>
   );
 }

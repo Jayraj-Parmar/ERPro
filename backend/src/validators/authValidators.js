@@ -5,7 +5,7 @@ import {
 } from "./commonValidators.js";
 
 export const signupValidator = [
-  nameValidator,
+  nameValidator("name"),
   emailValidator,
   passwordValidator,
 ];

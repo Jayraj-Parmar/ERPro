@@ -13,6 +13,9 @@ import VerifyEmail from "../pages/Auth/VerifyEmail";
 import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
 import ProductPage from "../pages/Product/ProductPage";
 import CustomerPage from "../pages/Customer/CustomerPage";
+import CustomerForm from "../components/Forms/CustomerForm";
+import SupplierPage from "../pages/Supplier/SupplierPage";
+import SupplierForm from "../components/Forms/SupplierForm";
 
 function AppRoutes() {
   const router = createBrowserRouter(
@@ -27,6 +30,9 @@ function AppRoutes() {
             <Route index element={<Dashboard />} />
             <Route path="product" element={<ProductPage />} />
             <Route path="customer" element={<CustomerPage />} />
+            <Route path="supplier" element={<SupplierPage />} />
+            <Route path="customer/addcustomer" element={<CustomerForm />} />
+            <Route path="supplier/addsupplier" element={<SupplierForm />} />
           </Route>
         </Route>
       </>
