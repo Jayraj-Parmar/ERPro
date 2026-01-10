@@ -79,8 +79,8 @@ function VerifyEmail() {
 
   return (
     <>
-      <div className="flex justify-center items-center h-full">
-        <div className="bg-white sm:p-10 p-6 rounded-2xl border border-gray-300">
+      <div className="flex justify-center items-center h-screen">
+        <div className="bg-white w-lg sm:p-10 p-6 rounded-2xl border border-gray-300">
           <h1 className="text-center font-bold text-2xl">Verify Email</h1>
           {error.message && <Error error={error} />}
 

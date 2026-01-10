@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteData, fetchData } from "../../app/slices/CrudSlice";
 import ColumnToggle from "../common/ColumnToggle";
@@ -198,4 +198,4 @@ function PartyList({ type = "customer", columns }) {
   );
 }
 
-export default PartyList;
+export default React.memo(PartyList);

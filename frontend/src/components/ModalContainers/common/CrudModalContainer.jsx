@@ -7,6 +7,7 @@ import {
   deleteData,
 } from "../../../app/slices/CrudSlice";
 import Error from "../../common/Error";
+import { cleanPayload } from "../../../utils/cleanPayload";
 
 function CrudModalContainer({ endpoint, label, FormComponent, ListComponent }) {
   const dispatch = useDispatch();
@@ -28,13 +29,14 @@ function CrudModalContainer({ endpoint, label, FormComponent, ListComponent }) {
   }, [dispatch, endpoint]);
 
   const handleSubmit = async (formData) => {
+    const cleanFormData = cleanPayload(formData);
     if (editData) {
       await dispatch(
-        updateData({ endpoint, id: editData._id, payload: formData })
+        updateData({ endpoint, id: editData._id, payload: cleanFormData })
       ).unwrap();
       setEditData(null);
     } else {
-      await dispatch(createData({ endpoint, payload: formData })).unwrap();
+      await dispatch(createData({ endpoint, payload: cleanFormData })).unwrap();
       setResetSignal((prev) => !prev);
     }
   };

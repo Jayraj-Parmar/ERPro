@@ -3,7 +3,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { TbCurrencyRupee } from "react-icons/tb";
 import Status from "../common/Status";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import SearchSelect from "../common/searchSelect";
 import { fetchLocation } from "../../app/slices/locationSlice";
 import Button from "../common/Button";
@@ -138,19 +138,48 @@ function PartyForm({ type = "customer" }) {
 
   // field on edit data
 
+  const didInit = useRef(false);
+
   useEffect(() => {
     if (!editData) return;
     if (!districtOptions.length) return;
+    if (didInit.current) return;
 
-    const find = (list, label) => list.find((o) => o.label === label) || null;
+    const districtOption = districtOptions.find(
+      (o) => o.label === editData.district
+    );
 
     reset({
       ...editData,
-      district: find(districtOptions, editData.district),
-      subdistrict: find(subDistrictOptions, editData.subdistrict),
-      village: find(villageOptions, editData.village),
+      district: districtOption || null,
+      subdistrict: null,
+      village: null,
     });
-  }, [editData, districtOptions, subDistrictOptions, villageOptions, reset]);
+
+    didInit.current = true;
+  }, [editData, districtOptions, reset]);
+
+  useEffect(() => {
+    if (!editData) return;
+    if (!districtId) return;
+    if (!subDistrictOptions.length) return;
+
+    const sub = subDistrictOptions.find(
+      (o) => o.label === editData.subdistrict
+    );
+
+    if (sub) setValue("subdistrict", sub);
+  }, [editData, districtId, subDistrictOptions, setValue]);
+
+  useEffect(() => {
+    if (!editData) return;
+    if (!subDistrictId) return;
+    if (!villageOptions.length) return;
+
+    const v = villageOptions.find((o) => o.label === editData.village);
+
+    if (v) setValue("village", v);
+  }, [editData, subDistrictId, villageOptions, setValue]);
 
   const [fieldError, setFieldErrors] = useState({});
 
@@ -172,6 +201,7 @@ function PartyForm({ type = "customer" }) {
         await dispatch(
           createData({ endpoint: type, payload: payload })
         ).unwrap();
+        reset();
       }
     } catch (error) {
       if (error.status === 422) {

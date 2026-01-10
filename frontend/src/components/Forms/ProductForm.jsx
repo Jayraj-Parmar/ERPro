@@ -5,14 +5,17 @@ import CRUDDropdown from "../common/CRUDDropdown.jsx";
 import Button from "../common/Button.jsx";
 import Status from "../common/Status.jsx";
 import InputSelect from "../common/InputSelect.jsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../../app/slices/productSlice.js";
 import Error from "../common/Error.jsx";
+import { cleanPayload } from "../../utils/cleanPayload.js";
 function ProductForm() {
   const dispatch = useDispatch();
 
   const { error, success } = useSelector((state) => state.product);
+
+  const [resetSignal, setResetSignal] = useState(false);
 
   const {
     watch,
@@ -36,6 +39,36 @@ function ProductForm() {
       purchase_price_type: "without tax",
     },
   });
+
+  useEffect(() => {
+    reset({
+      name: "",
+      description: "",
+      warehouse_location_id: null,
+      category_id: null,
+      brand_id: null,
+      tax_rate_id: null,
+      sale_price_type: "without tax",
+      default_sale_price_without_tax: undefined,
+      default_sale_price_with_tax: undefined,
+      discount_type: "percentage",
+      discount_percentage: undefined,
+      discount_amount: undefined,
+      opening_stock: 0,
+      opening_stock_date: undefined,
+      purchase_price_type: "without tax",
+      opening_purchase_price_without_tax: undefined,
+      opening_purchase_price_with_tax: undefined,
+      minimum_order_quantity: 0,
+      reorder_level: 0,
+      manufacture_date: undefined,
+      expiry_date: undefined,
+      purchase_unit: null,
+      sale_unit: null,
+      conversion_factor: 1,
+      status: "active",
+    });
+  }, [resetSignal, reset]);
 
   const discountType = watch("discount_type");
   const salePriceType = watch("sale_price_type");
@@ -75,34 +108,9 @@ function ProductForm() {
 
   const onSubmit = async (data) => {
     try {
-      await dispatch(createProduct(data)).unwrap();
-      reset({
-        name: "",
-        description: "",
-        warehouse_location_id: null,
-        category_id: null,
-        brand_id: null,
-        tax_rate_id: null,
-        sale_price_type: "without tax",
-        default_sale_price_without_tax: undefined,
-        default_sale_price_with_tax: undefined,
-        discount_type: "percentage",
-        discount_percentage: undefined,
-        discount_amount: undefined,
-        opening_stock: 0,
-        opening_stock_date: undefined,
-        purchase_price_type: "without tax",
-        opening_purchase_price_without_tax: undefined,
-        opening_purchase_price_with_tax: undefined,
-        minimum_order_quantity: 0,
-        reorder_level: 0,
-        manufacture_date: undefined,
-        expiry_date: undefined,
-        purchase_unit: null,
-        sale_unit: null,
-        conversion_factor: 1,
-        status: "active",
-      });
+      const cleanFormData = cleanPayload(data);
+      await dispatch(createProduct(cleanFormData)).unwrap();
+      setResetSignal((prev) => !prev);
     } catch (error) {
       //Nothing
     }

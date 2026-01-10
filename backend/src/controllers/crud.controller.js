@@ -32,7 +32,7 @@ export class CRUDController {
       if (err.code === 11000) {
         return res
           .status(409)
-          .json(new ApiResponse(409, null, `${name} already exists.`));
+          .json(new ApiResponse(409, null, `${data?.name} already exists.`));
       }
       throw new ApiError(
         500,
